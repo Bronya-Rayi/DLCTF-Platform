@@ -1,5 +1,7 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -11,38 +13,55 @@
 |
 */
 
-Route::get('/','ctfController@index');
+Route::get('/', 'IndexController@index');
+
+
+// 用户身份验证与注册相关的路由
+Route::get('/login', 'IndexController@login')->name('login');
+Route::get('/register', 'IndexController@register')->name('register');;
+Route::post('/auth/login', 'Auth\LoginController@login');
+Route::post('/auth/register', 'Auth\RegisterController@register');
+Route::any('/team', 'IndexController@team');
+Route::post('/reset_password', 'CtfPlatform\CtfController@resetPassword');
+Route::any('/logout', 'Auth\LoginController@logout')->name('logout');
+
+
 /*
-ctf
-*/
-Route::get('challenges','ctfController@challenges');
-Route::get('challenges/{type}','ctfController@ctftype')->where('type','[a-z]+');
-Route::get('scoreboard','ctfController@score');
-Route::post('flag/submit','ctfController@submitflag');
-Route::any('notice','ctfController@notice');
+ * ctf平台主页面
+ */
+
+Route::get('/home', 'CtfPlatform\CtfController@index');
+Route::get('/about','CtfPlatform\CtfController@about');
+Route::get('/challenges','CtfPlatform\CtfController@challenges');
+Route::get('/un_challenges','CtfPlatform\CtfController@challenges');
+Route::get('/challenges/{type}','CtfPlatform\CtfController@ctftype')->where('type','[a-z]+');
+Route::get('/scoreboard','CtfPlatform\CtfController@score');
+Route::post('/flag/submit','CtfPlatform\CtfController@submitflag');
+Route::any('/notice','CtfPlatform\CtfController@notice');
+
 /*
-admin
-*/
-Route::get('ctfadmin/task','adminController@seetask');
-Route::any('ctfadmin/task/add','adminController@addtask');
-Route::any('ctfadmin/task/edit/{id}','adminController@edittask')->where('id','[0-9]+');
-Route::get('ctfadmin/home','adminController@index');
-Route::any('ctfadmin/task/hint','adminController@hintadd');
-Route::get('ctfadmin/task/delete/{id}','adminController@delete')->where('id','[0-9]+');
-Route::get('ctfadmin/task/hide/{id}','adminController@hide')->where('id','[0-9]+');
-Route::get('ctfadmin/task/open/{id}','adminController@open')->where('id','[0-9]+');
-Route::any('ctfadmin/notice','adminController@notice');
-Route::get('ctfadmin/task/open/{id}','adminController@open')->where('id','[0-9]+');
-Route::get('ctfadmin/notice/delete/{id}','adminController@noticedelete')->where('id','[0-9]+');
-Route::any('ctfadmin/notice/edit/{id}','adminController@noticeedit')->where('id','[0-9]+');
-Route::get('ctfadmin/team','adminController@seeteam');
-Route::any('ctfadmin/team/edit/{id}','adminController@editteam')->where('id','[0-9]+');
-Route::get('ctfadmin/team/delete/{id}','adminController@deleteteam')->where('id','[0-9]+');
+ * ctf平台管理页面
+ */
+
+Route::get('/ctfadmin/home','CtfPlatform\CtfAdminController@index');
+Route::get('/ctfadmin/task','CtfPlatform\CtfAdminController@seetask');
+Route::get('/ctfadmin/settime','CtfPlatform\CtfAdminController@settime');
+
+Route::any('/ctfadmin/task/add','CtfPlatform\CtfAdminController@addtask');
+Route::get('/ctfadmin/task/delete/{id}','CtfPlatform\CtfAdminController@delete')->where('id','[0-9]+');
+Route::any('/ctfadmin/task/edit/{id}','CtfPlatform\CtfAdminController@edittask')->where('id','[0-9]+');
+Route::get('/ctfadmin/task/hide/{id}','CtfPlatform\CtfAdminController@hide')->where('id','[0-9]+');
+Route::get('/ctfadmin/task/open/{id}','CtfPlatform\CtfAdminController@open')->where('id','[0-9]+');
+Route::any('/ctfadmin/task/hint','CtfPlatform\CtfAdminController@hintadd');
+
+Route::any('/ctfadmin/notice','CtfPlatform\CtfAdminController@notice');
+Route::get('/ctfadmin/notice/delete/{id}','CtfPlatform\CtfAdminController@noticedelete')->where('id','[0-9]+');
+Route::any('/ctfadmin/notice/edit/{id}','CtfPlatform\CtfAdminController@noticeedit')->where('id','[0-9]+');
+
+Route::get('/ctfadmin/team','CtfPlatform\CtfAdminController@seeteam');
+Route::any('/ctfadmin/team/edit/{student_id}','CtfPlatform\CtfAdminController@editteam');
+
+Route::post('/ctfadmin/resetDatabase','CtfPlatform\CtfAdminController@resetDatabase');
+Route::any('/ctfadmin/changeMatchName','CtfPlatform\CtfAdminController@changeMatchName');
 
 
-
-
-Auth::routes();
-
-Route::get('/home', 'ctfController@index');
-Route::get('/about','ctfController@about');
